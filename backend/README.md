@@ -337,3 +337,203 @@ The request should be in JSON format with the following fields:
   "message": "All fields are required"
 }
 ```
+## Endpoint: `/captains/login`
+
+### Description
+This endpoint allows captains to log in by providing their email and password. Upon successful login, it returns a JSON Web Token (JWT) for authentication and the captain's details.
+
+---
+
+### HTTP Method
+`POST`
+
+---
+
+### Request Format
+The request should be in JSON format with the following fields:
+
+| Field      | Type    | Required | Validation             | Description                       |
+|------------|---------|----------|-------------------------|-----------------------------------|
+| `email`    | String  | Yes      | Must be a valid email   | The captain's email address.      |
+| `password` | String  | Yes      | Minimum 6 characters    | The captain's password.           |
+
+---
+
+### Example Request
+```json
+{
+  "email": "alice.smith@example.com",
+  "password": "password123"
+}
+```
+
+---
+
+### Example Response
+```json
+{
+  "token": "<jwt_token>",
+  "captain": {
+    "_id": "64c2ab3e7f3a1b001f6a3c4e",
+    "fullName": {
+      "firstname": "Alice",
+      "lastname": "Smith"
+    },
+    "email": "alice.smith@example.com",
+    "vehicle": {
+      "color": "Red",
+      "plate": "AB123CD",
+      "capacity": 4,
+      "vehicleType": "car"
+    },
+    "status": "inactive",
+    "location": {
+      "lat": null,
+      "lng": null
+    }
+  }
+}
+```
+
+---
+
+### Error Responses
+#### Validation Error (400)
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid Email",
+      "param": "email",
+      "location": "body"
+    },
+    {
+      "msg": "Password should be at least 6 characters long",
+      "param": "password",
+      "location": "body"
+    }
+  ]
+}
+```
+
+#### Invalid Credentials (401)
+```json
+{
+  "message": "Invalid email or password"
+}
+```
+
+---
+
+## Endpoint: `/captains/profile`
+
+### Description
+This endpoint provides the currently authenticated captain's profile details. The request must include a valid JWT in the authorization header or as a cookie.
+
+---
+
+### HTTP Method
+`GET`
+
+---
+
+### Authentication
+Requires a valid JWT.
+
+---
+
+### Example Request
+#### Headers
+```http
+Authorization: Bearer <jwt_token>
+```
+
+#### Request URL
+```http
+GET /captains/profile
+```
+
+---
+
+### Example Response
+```json
+{
+  "_id": "64c2ab3e7f3a1b001f6a3c4e",
+  "fullName": {
+    "firstname": "Alice",
+    "lastname": "Smith"
+  },
+  "email": "alice.smith@example.com",
+  "vehicle": {
+    "color": "Red",
+    "plate": "AB123CD",
+    "capacity": 4,
+    "vehicleType": "car"
+  },
+  "status": "inactive",
+  "location": {
+    "lat": null,
+    "lng": null
+  },
+  "createdAt": "2024-08-01T12:34:56.789Z",
+}
+```
+
+---
+
+### Error Responses
+#### Unauthorized Access (401)
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+---
+
+## Endpoint: `/captains/logout`
+
+### Description
+This endpoint logs out the currently authenticated captain by invalidating the provided JWT. The token is added to a blacklist, preventing future use.
+
+---
+
+### HTTP Method
+`GET`
+
+---
+
+### Authentication
+Requires a valid JWT.
+
+---
+
+### Example Request
+#### Headers
+```http
+Authorization: Bearer <jwt_token>
+```
+
+#### Request URL
+```http
+GET /captains/logout
+```
+
+---
+
+### Example Response
+```json
+{
+  "message": "Logout successful"
+}
+```
+
+---
+
+### Error Responses
+#### Unauthorized Access (401)
+```json
+{
+  "message": "Unauthorized"
+}
+```
