@@ -125,3 +125,106 @@ The request should be in JSON format with the following fields:
   "message": "Invalid Email or Password"
 }
 ```
+
+## Endpoint: `/users/profile`
+
+### Description
+This endpoint provides the currently authenticated user's profile details. The request must include a valid JWT in the authorization header or as a cookie.
+
+---
+
+### HTTP Method
+`GET`
+
+---
+
+### Authentication
+Requires a valid JWT.
+
+---
+
+### Example Request
+#### Headers
+```http
+Authorization: Bearer <jwt_token>
+```
+
+#### Request URL
+```http
+GET /users/profile
+```
+
+---
+
+### Example Response
+```json
+{
+  "_id": "64c1ef6b2f1b1c001f5a2e2f",
+  "fullName": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "email": "john.doe@example.com",
+  "createdAt": "2024-08-01T12:34:56.789Z",
+  "updatedAt": "2024-08-20T14:20:00.123Z"
+}
+```
+
+---
+
+### Error Responses
+#### Unauthorized Access (401)
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+---
+
+## Endpoint: `/users/logout`
+
+### Description
+This endpoint logs out the currently authenticated user by invalidating the provided JWT. The token is added to a blacklist, preventing future use.
+
+---
+
+### HTTP Method
+`GET`
+
+---
+
+### Authentication
+Requires a valid JWT.
+
+---
+
+### Example Request
+#### Headers
+```http
+Authorization: Bearer <jwt_token>
+```
+
+#### Request URL
+```http
+GET /users/logout
+```
+
+---
+
+### Example Response
+```json
+{
+  "message": "Logout successful"
+}
+```
+
+---
+
+### Error Responses
+#### Unauthorized Access (401)
+```json
+{
+  "message": "Unauthorized"
+}
+```
