@@ -228,3 +228,112 @@ GET /users/logout
   "message": "Unauthorized"
 }
 ```
+
+## Endpoint: `/captains/register`
+
+### Description
+This endpoint allows new captains to register by providing personal information, vehicle details, and authentication credentials. The system validates the data, hashes the password for security, and stores the captain's information in the database. Upon successful registration, the endpoint returns a JSON Web Token (JWT) for authentication and the captain's details.
+
+---
+
+### HTTP Method
+`POST`
+
+---
+
+### Request Format
+The request should be in JSON format with the following fields:
+
+| Field                       | Type     | Required | Validation                                 | Description                                      |
+|-----------------------------|----------|----------|-------------------------------------------|--------------------------------------------------|
+| `fullname.firstname`        | String   | Yes      | Minimum 3 characters                      | The captain's first name.                        |
+| `fullname.lastname`         | String   | No       | Minimum 3 characters (optional)           | The captain's last name.                         |
+| `email`                     | String   | Yes      | Must be a valid email                     | The captain's email address. Must be unique.     |
+| `password`                  | String   | Yes      | Minimum 6 characters                      | The captain's password.                          |
+| `vehicle.color`             | String   | Yes      | Minimum 3 characters                      | The color of the captain's vehicle.              |
+| `vehicle.plate`             | String   | Yes      | Minimum 3 characters                      | The license plate of the vehicle.                |
+| `vehicle.capacity`          | Integer  | Yes      | Must be an integer (minimum 1)            | The seating or load capacity of the vehicle.     |
+| `vehicle.vehicleType`       | String   | Yes      | Must be one of: `car`, `motorcycle`, `auto` | The type of vehicle the captain operates.        |
+
+---
+
+### Example Request
+```json
+{
+  "fullname": {
+    "firstname": "Alice",
+    "lastname": "Smith"
+  },
+  "email": "alice.smith@example.com",
+  "password": "password123",
+  "vehicle": {
+    "color": "Red",
+    "plate": "AB123CD",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+---
+
+### Example Response
+```json
+{
+  "token": "<jwt_token>",
+  "captain": {
+    "_id": "64c2ab3e7f3a1b001f6a3c4e",
+    "fullName": {
+      "firstname": "Alice",
+      "lastname": "Smith"
+    },
+    "email": "alice.smith@example.com",
+    "vehicle": {
+      "color": "Red",
+      "plate": "AB123CD",
+      "capacity": 4,
+      "vehicleType": "car"
+    },
+    "status": "inactive",
+    "location": {
+      "lat": null,
+      "lng": null
+    }
+  }
+}
+```
+
+---
+
+### Error Responses
+#### Validation Error (400)
+```json
+{
+  "errors": [
+    {
+      "msg": "First name should be at least 3 characters long",
+      "param": "fullname.firstname",
+      "location": "body"
+    },
+    {
+      "msg": "Invalid Email",
+      "param": "email",
+      "location": "body"
+    }
+  ]
+}
+```
+
+#### Captain Already Exists (400)
+```json
+{
+  "message": "Captain already exists"
+}
+```
+
+#### Missing Fields (400)
+```json
+{
+  "message": "All fields are required"
+}
+```
